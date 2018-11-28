@@ -5,11 +5,11 @@ const path = require('path');
 const app = express();
 
 // Serve only the static files form the dist directory
-app.use(express.static('./dist/iframe-uploader'));
+app.use(express.static('./dist/iframeUploader'));
 
 app.get('/*', function(req,res) {
     
-res.sendFile(path.join(__dirname,'/dist/iframe-uploader/index.html'));
+res.sendFile(path.join(__dirname,'/dist/iframeUploader/index.html'));
 });
 
 // Start the app by listening on the default Heroku port
