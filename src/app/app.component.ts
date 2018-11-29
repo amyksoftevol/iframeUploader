@@ -11,7 +11,7 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     window.addEventListener('message', event => {
-      console.log('Event from PARENT: ', event);
+      console.log('Message from PARENT: ', event);
       this.message = event.data;
     });
   }
