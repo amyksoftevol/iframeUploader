@@ -8,7 +8,7 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'iframeUploader';
 
-  uploadChoosedVideo(elemIdName: string, videoUpload) {
+  uploadChoosedVideo(elemIdName: string) {
     const fileInput = document.getElementById(elemIdName);
 
     const processVideo = event => {
