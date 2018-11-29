@@ -8,13 +8,10 @@ import { Component, OnInit } from '@angular/core';
 export class AppComponent implements OnInit {
   title = 'iframeUploader';
 
-  constructor() {
-    window.addEventListener('message', event => {
-      console.log('Message from PARENT: ', event.data);
-    });
-  }
-
   ngOnInit() {
+    window.addEventListener('message', event => {
+      console.log('Event from PARENT: ', event);
+    });
   }
 
   uploadChoosedVideo(elemIdName: string) {
