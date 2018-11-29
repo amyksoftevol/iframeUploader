@@ -7,10 +7,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'iframeUploader';
+  message = {};
 
   ngOnInit() {
     window.addEventListener('message', event => {
       console.log('Event from PARENT: ', event);
+      this.message = JSON.parse(event.data);
+      console.log('Data from PARENT: ', this.message);
     });
   }
 
