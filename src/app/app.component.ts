@@ -16,7 +16,6 @@ export class IframeGlobalConfig {
   public style: IframeStyle;
 
   constructor(data?:any) {
-    console.log('hello', data);
     if (!data) data = {};
     this.authToken = data.authToken || '';
     this.style = data && data.style ? new IframeStyle(data.style) : new IframeStyle();

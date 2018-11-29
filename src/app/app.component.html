@@ -1,6 +1,6 @@
 <div>
   <h1 [ngStyle]="config.style.title">Choose file:</h1>
   <input type="file" id="video-upload-button" name="video" accept="video/*" multiple style="display:none">
-  <button (click)="uploadChoosedVideo('video-upload-button')">Upload</button>
+  <button (click)="uploadChoosedVideo('video-upload-button')" [ngStyle]="config.style.button">Upload</button>
 </div>
 
