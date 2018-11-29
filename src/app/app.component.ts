@@ -1,5 +1,28 @@
 import { Component, OnInit } from '@angular/core';
 
+export class IframeStyle {
+  public title: Object;
+  public button: Object;
+
+  constructor(data?:any) {
+    if (!data) data = {};
+    this.title = data.title || {};
+    this.button = data.button || {};
+  }
+}
+
+export class IframeGlobalConfig {
+  public authToken: string;
+  public style: IframeStyle;
+
+  constructor(data?:any) {
+    console.log('hello', data);
+    if (!data) data = {};
+    this.authToken = data.authToken || '';
+    this.style = data && data.style ? new IframeStyle(data.style) : new IframeStyle();
+  }
+}
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -7,12 +30,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppComponent implements OnInit {
   title = 'iframeUploader';
-  message;
+  config = new IframeGlobalConfig();
 
   ngOnInit() {
     window.addEventListener('message', event => {
-      console.log('Message from PARENT: ', event);
-      this.message = event.data;
+      console.log('Config from PARENT: ', event);
+      // let data = {
+			// 	authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
+			// 	style: {
+      //     title: {'color':'#FFF', 'background-color':'#BAAFD5'}
+      //   }
+			// };
+      // this.config = data;
+      this.config = new IframeGlobalConfig(event.data);
+      console.log('Final Config: ', this.config);
     });
   }
 

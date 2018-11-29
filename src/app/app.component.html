@@ -1,5 +1,5 @@
 <div>
-  <h1 [style]="message && message.css ? message.css : ''">Choose file:</h1>
+  <h1 [ngStyle]="config.style.title">Choose file:</h1>
   <input type="file" id="video-upload-button" name="video" accept="video/*" multiple style="display:none">
   <button (click)="uploadChoosedVideo('video-upload-button')">Upload</button>
 </div>
