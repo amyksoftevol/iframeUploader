@@ -1,6 +1,6 @@
 <div>
-  <h1 [ngStyle]="config.style.title">Choose file:</h1>
-  <input type="file" id="video-upload-button" name="video" accept="video/*" multiple style="display:none">
-  <button (click)="uploadChoosedVideo('video-upload-button')" [ngStyle]="config.style.button">Upload</button>
+  <h1 class="title">Choose file:</h1>
+  <input (change)="processVideo($event, 'video-upload')" (click)="$event.stopPropagation()" type="file" id="video-upload" name="video" accept="video/*" multiple>
+  <button class="button" (click)="uploadChoosedVideo('video-upload')">Upload</button>
 </div>
 

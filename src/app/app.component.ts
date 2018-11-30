@@ -1,74 +1,102 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
-export class IframeStyle {
-  public title: Object;
-  public button: Object;
-
-  constructor(data?:any) {
-    if (!data) data = {};
-    this.title = data.title || {};
-    this.button = data.button || {};
-  }
-}
-
-export class IframeGlobalConfig {
+export class IframeConfig {
+  public source: string;
   public authToken: string;
-  public style: IframeStyle;
+  public cssEmbedded: string;
+  public cssExternal: string;
 
   constructor(data?:any) {
     if (!data) data = {};
+    this.source = data.source || '';
     this.authToken = data.authToken || '';
-    this.style = data && data.style ? new IframeStyle(data.style) : new IframeStyle();
+    this.cssEmbedded = data.cssEmbedded || '';
+    this.cssExternal = data.cssExternal || '';
   }
 }
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class AppComponent implements OnInit {
   title = 'iframeUploader';
-  config = new IframeGlobalConfig();
+  config: IframeConfig;
 
   ngOnInit() {
     window.addEventListener('message', event => {
       console.log('Config from PARENT: ', event);
-      // let data = {
-			// 	authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
-			// 	style: {
-      //     title: {'color':'#FFF', 'background-color':'#BAAFD5'}
-      //   }
-			// };
-      // this.config = data;
-      this.config = new IframeGlobalConfig(event.data);
-      console.log('Final Config: ', this.config);
+      let data = {
+        source: "iframeParent",
+        operation: "",
+				authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
+        cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
+        cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
+      };
+
+      if (data.source !== 'iframeParent') return;
+
+      this.config = new IframeConfig(data);
+
+      if (this.config.cssEmbedded) {
+        this.createEmbeddedStyles(this.config.cssEmbedded);
+      }
+      if (this.config.cssExternal) {
+        this.createExternalStyles(this.config.cssExternal);
+      }
+      
     });
+    window.parent.postMessage('YYYYYYY', '*');
   }
 
-  uploadChoosedVideo(elemIdName: string) {
-    const fileInputElement = document.getElementById(elemIdName);
+  createEmbeddedStyles(css: string) {
+    const id = 'cssEmbedded';
+    const cssEmbeddedElement = document.getElementById(id);
 
-    const processVideo = event => {
-      fileInputElement.removeEventListener('change', processVideo);
-        console.log('UPLOADED FILE: ', event.target['files']);
-        // if (!videoUpload) {
-        //     this.videoUploadService.addFilesAndUpload(event.target['files']);
-        // } else {
-        //     this.videoUploadService.addFileAndUpload(event.target['files'], videoUpload);
-        // }
-        // fileInputElement['value'] = '';
-    };
+    if (cssEmbeddedElement) return;
 
-    const preventClickPropagation = event => {
-        event.stopPropagation();
-        fileInputElement.removeEventListener('click', preventClickPropagation);
-    };
+    const head = document.head || document.getElementsByTagName('head')[0];
+    const style = document.createElement('style');
+    style.id = id;
+    style.type = 'text/css';
+    if (style['styleSheet']){
+      // This is required for IE8 and below.
+      style['styleSheet'].cssText = css;
+    } else {
+      style.appendChild(document.createTextNode(css));
+    }
+    head.appendChild(style);
 
-    fileInputElement.addEventListener('change', processVideo);
-    fileInputElement.addEventListener('click', preventClickPropagation);
+  }
+
+  createExternalStyles(cssHref: string) {
+    const id = 'cssExternal';
+    const cssExternalElement = document.getElementById(id);
+
+    if (cssExternalElement) return;
+
+    const head = document.head || document.getElementsByTagName('head')[0];
+    const link  = document.createElement('link');
+    link.id = id;
+    link.rel  = 'stylesheet';
+    link.type = 'text/css';
+    link.href = cssHref;
+    head.appendChild(link);
+
+  }
+
+  uploadChoosedVideo(elementId: string) {
+    const fileInputElement = document.getElementById(elementId);
     fileInputElement.click();
   }
+
+  processVideo(event: Event, elementId: string) {
+      console.log('UPLOADED FILE: ', event.target['files']);
+      const fileInputElement = document.getElementById(elementId);
+      // fileInputElement['value'] = '';
+  };
 
   // // addEventListener support for IE8
   // bindEvent(element, eventName, eventHandler) {
