@@ -75,6 +75,10 @@ export class AppComponent implements OnInit {
     window.parent.postMessage(message, '*');
   }
 
+  uploadDroppedVideo(event) {
+    console.log('Dropped videos: ', event);
+  }
+
   createEmbeddedStyles(css: string) {
     const id = 'cssEmbedded';
     const cssEmbeddedElement = document.getElementById(id);
