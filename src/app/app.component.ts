@@ -15,6 +15,13 @@ export class IframeOptions {
   }
 }
 
+const OPERATION_TYPE = {
+  load: 'load',
+  chooseVideo: 'chooseVideo'
+};
+
+const IFRAME_SOURCE = 'iframeParent';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -42,12 +49,13 @@ export class AppComponent implements OnInit {
       const data = event && event.data;
       console.log('Data: ', data);
       if (!data || !data.options || !data.operation) return;
-      if (data.options.source !== 'iframeParent') return;
+      if (data.options.source !== IFRAME_SOURCE) return;
       if (!data.options.authToken) return;
 
-      if (data.operation === 'load') {
+      if (data.operation === OPERATION_TYPE.load) {
         this.options = new IframeOptions(data.options);
       }
+      console.log('OPTIONS: ', this.options);
 
       if (this.options.cssEmbedded) {
         this.createEmbeddedStyles(this.options.cssEmbedded);
@@ -56,7 +64,7 @@ export class AppComponent implements OnInit {
         this.createExternalStyles(this.options.cssExternal);
       }
 
-      if (data.operation === 'chooseVideo') {
+      if (data.operation === OPERATION_TYPE.chooseVideo) {
         this.chooseVideo();
       }
       
@@ -104,7 +112,8 @@ export class AppComponent implements OnInit {
   }
 
   chooseVideo() {
-    const fileInputElement = document.getElementById('video-upload');
+    const id = 'video-upload';
+    const fileInputElement = document.getElementById(id);
     fileInputElement.click();
   }
 
