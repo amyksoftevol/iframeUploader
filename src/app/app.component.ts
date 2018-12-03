@@ -26,17 +26,23 @@ export class AppComponent implements OnInit {
   config: IframeConfig;
 
   ngOnInit() {
+    // listen events from parent
     window.addEventListener('message', event => {
-      console.log('Config from PARENT: ', event);
-      let data = {
-        source: "iframeParent",
-        operation: "",
-				authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
-        cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
-        cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
-      };
+      console.log('Message from PARENT: ', event);
+      // const data = {
+      //   source: "iframeParent",
+      //   operation: "",
+			// 	authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
+      //   cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
+      //   cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
+      // };
+      const data = event && event.data;
 
       if (data.source !== 'iframeParent') return;
+      if (!data.authToken) {
+        alert('Auth Token isn\'t provided');
+        return;
+      }
 
       this.config = new IframeConfig(data);
 
@@ -48,7 +54,10 @@ export class AppComponent implements OnInit {
       }
       
     });
-    window.parent.postMessage('YYYYYYY', '*');
+  }
+
+  sendMessageToParentWindow(message) {
+    window.parent.postMessage(message, '*');
   }
 
   createEmbeddedStyles(css: string) {
@@ -87,7 +96,7 @@ export class AppComponent implements OnInit {
 
   }
 
-  uploadChoosedVideo(elementId: string) {
+  chooseVideo(elementId: string) {
     const fileInputElement = document.getElementById(elementId);
     fileInputElement.click();
   }
