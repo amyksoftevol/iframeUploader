@@ -37,7 +37,7 @@ export class AppComponent implements OnInit {
       //   cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
       // };
       const data = event && event.data;
-
+      console.log('Data: ', data);
       if (data.source !== 'iframeParent') return;
       if (!data.authToken) {
         alert('Auth Token isn\'t provided');
