@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
-export class IframeConfig {
+export class IframeOptions {
   public source: string;
   public authToken: string;
   public cssEmbedded: string;
@@ -8,8 +8,8 @@ export class IframeConfig {
 
   constructor(data?:any) {
     if (!data) data = {};
-    this.source = data.source || '';
-    this.authToken = data.authToken || '';
+    this.source = data.source;
+    this.authToken = data.authToken;
     this.cssEmbedded = data.cssEmbedded || '';
     this.cssExternal = data.cssExternal || '';
   }
@@ -23,34 +23,41 @@ export class IframeConfig {
 })
 export class AppComponent implements OnInit {
   title = 'iframeUploader';
-  config: IframeConfig;
+  options: IframeOptions;
 
   ngOnInit() {
     // listen events from parent
     window.addEventListener('message', event => {
       console.log('Message from PARENT: ', event);
       // const data = {
-      //   source: "iframeParent",
-      //   operation: "",
-			// 	authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
-      //   cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
-      //   cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
+      //   operation: 'load',
+      //   options: {
+      //     source: "iframeParent",
+      //     operation: "",
+      //     authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
+      //     cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
+      //     cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
+      //   }
       // };
       const data = event && event.data;
       console.log('Data: ', data);
-      if (data.source !== 'iframeParent') return;
-      if (!data.authToken) {
-        alert('Auth Token isn\'t provided');
-        return;
+      if (!data || !data.options || !data.operation) return;
+      if (data.options.source !== 'iframeParent') return;
+      if (!data.options.authToken) return;
+
+      if (data.operation === 'load') {
+        this.options = new IframeOptions(data.options);
       }
 
-      this.config = new IframeConfig(data);
-
-      if (this.config.cssEmbedded) {
-        this.createEmbeddedStyles(this.config.cssEmbedded);
+      if (this.options.cssEmbedded) {
+        this.createEmbeddedStyles(this.options.cssEmbedded);
       }
-      if (this.config.cssExternal) {
-        this.createExternalStyles(this.config.cssExternal);
+      if (this.options.cssExternal) {
+        this.createExternalStyles(this.options.cssExternal);
+      }
+
+      if (data.operation === 'chooseVideo') {
+        this.chooseVideo();
       }
       
     });
@@ -96,8 +103,8 @@ export class AppComponent implements OnInit {
 
   }
 
-  chooseVideo(elementId: string) {
-    const fileInputElement = document.getElementById(elementId);
+  chooseVideo() {
+    const fileInputElement = document.getElementById('video-upload');
     fileInputElement.click();
   }
 
