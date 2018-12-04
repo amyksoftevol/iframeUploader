@@ -1,18 +1,26 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { VideoUploadComponent } from './video-upload.component';
-import { SharedModule } from '../shared/shared.module';
+import { DragAndDropDirective } from './directives/drag-and-drop.directive';
+import { VideoUploadService } from './services/video-upload.service';
+import { ApiRequestService } from './services/api-request.service';
+import { AkamaiRequestService } from './services/akamai-request.service';
 
 @NgModule({
   declarations: [
-    VideoUploadComponent
+    VideoUploadComponent,
+    DragAndDropDirective
   ],
   imports: [
-    CommonModule,
-    SharedModule
+    CommonModule
   ],
   exports: [
     VideoUploadComponent
+  ],
+  providers: [
+    VideoUploadService,
+    ApiRequestService,
+    AkamaiRequestService
   ]
 })
 export class VideoUploadModule { }

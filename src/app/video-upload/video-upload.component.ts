@@ -43,16 +43,15 @@ export class VideoUploadComponent implements OnInit {
       //   options: {
       //     source: "iframeParent",
       //     operation: "",
-      //     authToken: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJlbWFpbCIsInN1YiI6IjY3MiIsImlhdCI6MTU0MzQ5MjEzOCwiZXhwIjoxNTQ0MDk2OTM4fQ.0QA-IznaT6KvJMuwxAZNa5Wi7PBCLVibe3eoYUc26rg",
-      //     cssEmbedded: ".title{color:#FFF;background-color:#BAAFD5;} .button{background-color:#13b49f;font-size:14px;color:#FFF;font-weight:500;}",
+      //     authToken: "666666",
       //     cssExternal: "https://dl.dropbox.com/s/khutet5bmu9bl7w/styles.css"
       //   }
       // };
       const data = event && event.data;
       console.log('Data: ', data);
-      if (!data || !data.options || !data.operation) return;
-      if (data.options.source !== IFRAME_SOURCE) return;
-      if (!data.options.authToken) return;
+      if (!data || !data.options || !data.operation) { return; }
+      if (data.options.source !== IFRAME_SOURCE) { return; }
+      if (!data.options.authToken) { return; }
 
       if (data.operation === OPERATION_TYPE.load) {
         this.options = new IframeOptions(data.options);
@@ -85,7 +84,7 @@ export class VideoUploadComponent implements OnInit {
     const id = 'cssEmbedded';
     const cssEmbeddedElement = document.getElementById(id);
 
-    if (cssEmbeddedElement) return;
+    if (cssEmbeddedElement) { return; }
 
     const head = document.head || document.getElementsByTagName('head')[0];
     const style = document.createElement('style');
@@ -105,7 +104,7 @@ export class VideoUploadComponent implements OnInit {
     const id = 'cssExternal';
     const cssExternalElement = document.getElementById(id);
 
-    if (cssExternalElement) return;
+    if (cssExternalElement) { return; }
 
     const head = document.head || document.getElementsByTagName('head')[0];
     const link = document.createElement('link');
