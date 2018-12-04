@@ -2,7 +2,7 @@ import { Directive, Input, Output, EventEmitter, HostListener, HostBinding, Elem
 
 
 @Directive({
-    selector: '[appDragAndDrop]'
+    selector: '[appDragAndDropFile]'
 })
 
 export class DragAndDropDirective {
@@ -12,7 +12,7 @@ export class DragAndDropDirective {
     private rgbaWhiteColor = 'rgba(255, 255, 255, 1)';
     private rgbaWhiteColorTransparent = 'rgba(255, 255, 255, 0.5)';
 
-    @Output() private filesAdded: EventEmitter<any[]> = new EventEmitter();
+    @Output() private filesDropped: EventEmitter<FileList> = new EventEmitter<FileList>();
     @Input() private bgDragLeave: string;
     @Input() private bgDragEnter: string;
 
@@ -29,9 +29,6 @@ export class DragAndDropDirective {
 
     @HostListener('document:dragleave', ['$event']) onDragLeaveDocument(event) {
         this.preventDefaultAndStopPropagation(event);
-        if (event.offsetX < 0 && event.offsetY < 0) {
-            this.zIndex = '-1';
-        }
     }
 
     @HostListener('dragover', ['$event']) public onDragOver(event) {
@@ -39,10 +36,8 @@ export class DragAndDropDirective {
     }
     @HostListener('dragleave', ['$event']) public onDragLeave(event) {
         this.preventDefaultAndStopPropagation(event);
-        if (this.elementRef.nativeElement === event.target) {
-            this.zIndex = '-1';
-            this.backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
-        }
+        this.zIndex = '-1';
+        this.backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
 
     }
 
@@ -51,7 +46,7 @@ export class DragAndDropDirective {
         this.backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
         const files = event.dataTransfer.files;
         if (files.length > 0) {
-            this.filesAdded.emit(files);
+            this.filesDropped.emit(files);
         }
         this.zIndex = '-1';
     }
