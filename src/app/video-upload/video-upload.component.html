@@ -1,0 +1,9 @@
+<div class="container">
+  <div class="video-uploads">
+    <div class="title">Choose file:</div>
+    <input (change)="processVideo($event, 'video-upload')" (click)="$event.stopPropagation()" type="file" id="video-upload" name="video" accept="video/*" multiple>
+    <button class="button" (click)="chooseVideo()">Upload</button>
+    <button (click)="sendMessageToParentWindow('Hello from child iframe!')">Send Message To Parent</button>
+  </div>
+  <div class="drag-and-drop-area" appDragAndDropFile (filesDropped)="uploadDroppedVideo($event)"></div>
+</div>

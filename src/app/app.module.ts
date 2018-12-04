@@ -2,15 +2,15 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { DragAndDropDirective } from './drag-and-drop.directive';
+import { VideoUploadModule } from './video-upload/video-upload.module';
 
 @NgModule({
   declarations: [
-    AppComponent,
-    DragAndDropDirective
+    AppComponent
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    VideoUploadModule
   ],
   providers: [],
   bootstrap: [AppComponent]
