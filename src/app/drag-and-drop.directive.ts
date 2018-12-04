@@ -6,57 +6,59 @@ import { Directive, Input, Output, EventEmitter, HostListener, HostBinding, Elem
 })
 
 export class DragAndDropDirective {
-    constructor(private _eref: ElementRef) { }
-    private defaultBackgroundColor = 'rgba(255, 255, 255, 1)';
-    private defaultBackgroundColorDragOver = 'rgba(255, 255, 255, 0.7)';
+
+    constructor(private elementRef: ElementRef) { }
+
+    private rgbaWhiteColor = 'rgba(255, 255, 255, 1)';
+    private rgbaWhiteColorTransparent = 'rgba(255, 255, 255, 0.5)';
 
     @Output() private filesAdded: EventEmitter<any[]> = new EventEmitter();
-    @Input() private bg: string;
-    @Input() private bgDragOver: string;
+    @Input() private bgDragLeave: string;
+    @Input() private bgDragEnter: string;
 
-    @HostBinding('style.background') private backgroundColor = this.bg || this.defaultBackgroundColor;
+    @HostBinding('style.background') private backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
     @HostBinding('style.zIndex') private zIndex = '-1';
 
-    @HostListener('document:dragenter', ['$event']) onDragOverDocument(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (!this._eref.nativeElement.contains(event.target)) {
+    @HostListener('document:dragenter', ['$event']) onDragEnterDocument(event) {
+        this.preventDefaultAndStopPropagation(event);
+        if (!this.elementRef.nativeElement.contains(event.target)) {
             this.zIndex = '1';
-            this.backgroundColor = this.bgDragOver || this.defaultBackgroundColorDragOver;
+            this.backgroundColor = this.bgDragEnter || this.rgbaWhiteColorTransparent;
         }
     }
 
     @HostListener('document:dragleave', ['$event']) onDragLeaveDocument(event) {
-        event.preventDefault();
-        event.stopPropagation();
+        this.preventDefaultAndStopPropagation(event);
         if (event.offsetX < 0 && event.offsetY < 0) {
             this.zIndex = '-1';
         }
     }
 
     @HostListener('dragover', ['$event']) public onDragOver(event) {
-        event.preventDefault();
-        event.stopPropagation();
+        this.preventDefaultAndStopPropagation(event);
     }
     @HostListener('dragleave', ['$event']) public onDragLeave(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        if (this._eref.nativeElement === event.target) {
+        this.preventDefaultAndStopPropagation(event);
+        if (this.elementRef.nativeElement === event.target) {
             this.zIndex = '-1';
-            this.backgroundColor = this.bg || this.defaultBackgroundColor;
+            this.backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
         }
 
     }
 
     @HostListener('drop', ['$event']) public onDrop(event) {
-        event.preventDefault();
-        event.stopPropagation();
-        this.backgroundColor = this.bg || this.defaultBackgroundColor;
+        this.preventDefaultAndStopPropagation(event);
+        this.backgroundColor = this.bgDragLeave || this.rgbaWhiteColor;
         const files = event.dataTransfer.files;
         if (files.length > 0) {
             this.filesAdded.emit(files);
         }
         this.zIndex = '-1';
+    }
+
+    preventDefaultAndStopPropagation(event) {
+        event.preventDefault();
+        event.stopPropagation();
     }
 
 }
